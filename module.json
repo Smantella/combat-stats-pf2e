@@ -3,7 +3,7 @@
   "title": "Combat Stats — PF2e",
   "description": "Per-character combat statistics for Pathfinder 2e: damage dealt, damage taken, healing done, kills, max single hit, and times downed. Tracks each fight separately with history, charts, and Excel export. Customizable theme colors and chat card summary at end of combat.",
   "version": "2.0.0",
-  "compatibility": { "minimum": "14", "verified": "14.364", "maximum": "14" },
+  "compatibility": { "minimum": "14", "verified": "14.364", "maximum": "14.999" },
   "relationships": {
     "systems": [{ "id": "pf2e", "type": "system", "compatibility": { "minimum": "8.3.0" } }]
   },
