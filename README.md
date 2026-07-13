@@ -3,11 +3,20 @@
 > Your party deserves more than a forgotten roll. Combat Stats tracks every hit, heal, and kill, and makes sure no one forgets who carried the fight.
 
 ![Foundry VTT](https://img.shields.io/badge/Foundry-v14-informational?style=flat-square)
-![PF2e](https://img.shields.io/badge/PF2e-Remastered-blue?style=flat-square)
+![PF2e](https://img.shields.io/badge/PF2e-blue?style=flat-square)
 ![Version](https://img.shields.io/github/v/release/Smantella/combat-stats-pf2e?style=flat-square)
 ![License](https://img.shields.io/badge/license-CC%20BY--SA%204.0-lightgrey?style=flat-square)
 ![Downloads](https://img.shields.io/github/downloads/Smantella/combat-stats-pf2e/total?style=flat-square)
 
+---
+
+## 📸 Screenshots
+
+| Totals Table | Chart View |
+|:---:|:---:|
+| ![Totals](screenshots/Totals.png) | ![Chart](screenshots/Chart.png) |
+| **End-of-Combat Card** | **Theme & Settings** |
+| ![Chat Card](screenshots/chat%20card.png) | ![Theme](screenshots/Style.png) |
 
 ---
 
@@ -152,3 +161,5 @@ Issues and pull requests are welcome. If something breaks or you have an idea, [
 ---
 
 *Made by [Smantella](https://github.com/Smantella)* 🏰
+
+## Check also the D&D 5e version [here](https://github.com/Smantella/combat-stats)
