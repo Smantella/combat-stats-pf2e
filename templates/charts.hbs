@@ -1,0 +1,218 @@
+{{!-- charts.hbs v2.0.0 PF2e --}}
+<div class="cs-charts-wrap">
+
+  {{!-- Tab bar --}}
+  <div class="cs-tabs">
+    <button class="cs-tab-btn {{#if (eq tab 'totals')}}active{{/if}}" data-tab="totals">
+      <i class="fa-solid fa-table"></i> {{localize "COMBATSTATS.Tabs.Totals"}}
+    </button>
+    <button class="cs-tab-btn {{#if (eq tab 'history')}}active{{/if}}" data-tab="history">
+      <i class="fa-solid fa-chart-column"></i> {{localize "COMBATSTATS.Tabs.Chart"}}
+    </button>
+    {{#if selectedFight}}
+    <button class="cs-tab-btn {{#if (eq tab 'fight')}}active{{/if}}" data-tab="fight">
+      <i class="fa-solid fa-swords"></i> {{selectedFight.name}}
+    </button>
+    <span id="cs-close-fight-tab" class="cs-tab-close-x" title="{{localize 'COMBATSTATS.Btn.Close'}}">✕</span>
+    {{/if}}
+
+    <div class="cs-tabs-right">
+      {{#if hasData}}
+      <button id="cs-export-excel" class="cs-export-btn" title="{{localize 'COMBATSTATS.Btn.Excel'}}">
+        <i class="fas fa-file-excel"></i> {{localize "COMBATSTATS.Btn.Excel"}}
+      </button>
+      {{/if}}
+      {{#if isGM}}
+      <button id="cs-clear-history" class="cs-danger" title="{{localize 'COMBATSTATS.Btn.ClearAll'}}">
+        <i class="fas fa-trash"></i>
+      </button>
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- ══ TAB: TOTALS ══ --}}
+  {{#if (eq tab 'totals')}}
+  <div class="cs-tab-content">
+    {{#if hasData}}
+    <div class="cs-fight-bar">
+      <label>{{localize "COMBATSTATS.Fight.Open"}}</label>
+      <select id="cs-fight-select">
+        <option value="">{{localize "COMBATSTATS.Fight.Select"}}</option>
+        {{#each history}}
+        <option value="{{id}}">{{name}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <table class="cs-table">
+      <thead><tr>
+        <th>{{localize "COMBATSTATS.Table.Character"}}</th>
+        <th style="color:#ce4141;"><i class="fa-solid fa-burst"></i> {{localize "COMBATSTATS.Table.Dealt"}}</th>
+        <th style="color:#52a8e0;"><i class="fa-solid fa-shield-halved"></i> {{localize "COMBATSTATS.Table.Taken"}}</th>
+        <th style="color:#2ecc71;"><i class="fa-solid fa-heart"></i> {{localize "COMBATSTATS.Table.Healed"}}</th>
+        <th style="color:var(--cs-accent);"><i class="fa-solid fa-skull"></i> {{localize "COMBATSTATS.Table.Kills"}}</th>
+        <th style="color:#ff4500;"><i class="fa-solid fa-khanda"></i> {{localize "COMBATSTATS.Chart.MaxHit"}}</th>
+        <th style="color:#1abc9c;"><i class="fa-solid fa-hand-holding-heart"></i> {{localize "COMBATSTATS.Chart.MaxHeal"}}</th>
+        <th style="color:#e8e8e8;"><i class="fa-solid fa-skull-crossbones"></i> {{localize "COMBATSTATS.Chart.Downed"}}</th>
+      </tr></thead>
+      <tbody>
+        {{#each totals}}
+        <tr>
+          <td class="cs-name" {{#if playerColor}}style="color:{{playerColor}};"{{/if}}>{{displayName}}</td>
+          <td class="cs-dealt">{{damageDealt}}</td>
+          <td class="cs-taken">{{damageTaken}}</td>
+          <td class="cs-healed">{{healingDone}}</td>
+          <td class="cs-kills">{{kills}}</td>
+          <td class="cs-maxhit">{{#if (gt maxSingleHit 0)}}{{maxSingleHit}}{{else}}—{{/if}}</td>
+          <td class="cs-maxheal">{{#if (gt maxSingleHeal 0)}}{{maxSingleHeal}}{{else}}—{{/if}}</td>
+          <td class="cs-downed">{{timesDowned}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+      <tfoot><tr class="cs-totals-row">
+        <td><strong>{{localize "COMBATSTATS.Table.Total"}}</strong></td>
+        <td><strong>{{grandTotal.damageDealt}}</strong></td>
+        <td><strong>{{grandTotal.damageTaken}}</strong></td>
+        <td><strong>{{grandTotal.healingDone}}</strong></td>
+        <td><strong>{{grandTotal.kills}}</strong></td>
+        <td class="cs-maxhit">—</td>
+        <td class="cs-maxheal">—</td>
+        <td class="cs-downed"><strong>{{grandTotal.timesDowned}}</strong></td>
+      </tr></tfoot>
+    </table>
+    {{else}}
+    <p class="cs-no-data">
+      <i class="fa-solid fa-chart-column" style="font-size:2em;opacity:0.3;display:block;margin-bottom:8px;"></i>
+      {{localize "COMBATSTATS.Fight.NoFights"}}
+    </p>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  {{!-- ══ TAB: CHART ══ --}}
+  {{#if (eq tab 'history')}}
+  <div class="cs-tab-content cs-tab-chart">
+    <div class="cs-chart-toolbar">
+      <div class="cs-btn-group">
+        <button class="cs-mode-btn {{#if (eq metric 'dealt')}}active{{/if}}" data-mode="dealt">
+          <i class="fa-solid fa-burst" style="color:#ce4141;"></i> {{localize "COMBATSTATS.Chart.Dealt"}}
+        </button>
+        <button class="cs-mode-btn {{#if (eq metric 'taken')}}active{{/if}}" data-mode="taken">
+          <i class="fa-solid fa-shield-halved" style="color:#e67e22;"></i> {{localize "COMBATSTATS.Chart.Taken"}}
+        </button>
+        <button class="cs-mode-btn {{#if (eq metric 'healed')}}active{{/if}}" data-mode="healed">
+          <i class="fa-solid fa-heart" style="color:#2ecc71;"></i> {{localize "COMBATSTATS.Chart.Healed"}}
+        </button>
+        <button class="cs-mode-btn {{#if (eq metric 'kills')}}active{{/if}}" data-mode="kills">
+          <i class="fa-solid fa-skull" style="color:#d4af37;"></i> {{localize "COMBATSTATS.Chart.Kills"}}
+        </button>
+        <button class="cs-mode-btn {{#if (eq metric 'maxhit')}}active{{/if}}" data-mode="maxhit">
+          <i class="fa-solid fa-khanda" style="color:#ff6a00;"></i> {{localize "COMBATSTATS.Chart.MaxHit"}}
+        </button>
+        <button class="cs-mode-btn {{#if (eq metric 'maxheal')}}active{{/if}}" data-mode="maxheal">
+          <i class="fa-solid fa-hand-holding-heart" style="color:#1abc9c;"></i> {{localize "COMBATSTATS.Chart.MaxHeal"}}
+        </button>
+        <button class="cs-mode-btn {{#if (eq metric 'downed')}}active{{/if}}" data-mode="downed">
+          <i class="fa-solid fa-skull-crossbones" style="color:#e8e8e8;"></i> {{localize "COMBATSTATS.Chart.Downed"}}
+        </button>
+      </div>
+      <div class="cs-btn-group">
+        <button class="cs-type-btn {{#if (eq chartType 'bar')}}active{{/if}}" data-type="bar">
+          <i class="fa-solid fa-chart-column"></i> Bar
+        </button>
+        <button class="cs-type-btn {{#if (eq chartType 'doughnut')}}active{{/if}}" data-type="doughnut">
+          <i class="fa-solid fa-chart-pie"></i> Doughnut
+        </button>
+      </div>
+    </div>
+    {{#if hasData}}
+    <div class="cs-chart-container">
+      <canvas id="cs-chart-canvas"></canvas>
+    </div>
+    {{else}}
+    <p class="cs-no-data">{{localize "COMBATSTATS.Fight.NoFights"}}</p>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  {{!-- ══ TAB: SINGLE FIGHT ══ --}}
+  {{#if (eq tab 'fight')}}
+  {{#if selectedFight}}
+  <div class="cs-tab-content">
+
+    <div class="cs-fight-header">
+      <i class="fa-solid fa-swords"></i>
+      <span class="cs-fight-title">{{selectedFight.name}}</span>
+      <span class="cs-fight-date">{{date}}</span>
+      {{#if isGM}}
+      <button id="cs-delete-fight" class="cs-danger cs-delete-fight-btn" title="{{localize 'COMBATSTATS.Fight.Delete'}}">
+        <i class="fas fa-trash"></i> {{localize "COMBATSTATS.Btn.Delete"}}
+      </button>
+      {{/if}}
+    </div>
+
+    {{#if fightChars}}
+    <table class="cs-table">
+      <thead><tr>
+        <th>{{localize "COMBATSTATS.Table.Character"}}</th>
+        <th style="color:#ce4141;"><i class="fa-solid fa-burst"></i> {{localize "COMBATSTATS.Table.Dealt"}}</th>
+        <th style="color:#52a8e0;"><i class="fa-solid fa-shield-halved"></i> {{localize "COMBATSTATS.Table.Taken"}}</th>
+        <th style="color:#2ecc71;"><i class="fa-solid fa-heart"></i> {{localize "COMBATSTATS.Table.Healed"}}</th>
+        <th style="color:var(--cs-accent);"><i class="fa-solid fa-skull"></i> {{localize "COMBATSTATS.Table.Kills"}}</th>
+        <th style="color:#ff4500;"><i class="fa-solid fa-khanda"></i> {{localize "COMBATSTATS.Chart.MaxHit"}}</th>
+        <th style="color:#1abc9c;"><i class="fa-solid fa-hand-holding-heart"></i> {{localize "COMBATSTATS.Chart.MaxHeal"}}</th>
+        <th style="color:#e8e8e8;"><i class="fa-solid fa-skull-crossbones"></i> {{localize "COMBATSTATS.Chart.Downed"}}</th>
+      </tr></thead>
+      <tbody>
+        {{#each fightChars}}
+        <tr>
+          <td class="cs-name" {{#if playerColor}}style="color:{{playerColor}};"{{/if}}>{{displayName}}</td>
+          <td class="cs-dealt">{{damageDealt}}</td>
+          <td class="cs-taken">{{damageTaken}}</td>
+          <td class="cs-healed">{{healingDone}}</td>
+          <td class="cs-kills">{{kills}}</td>
+          <td class="cs-maxhit">{{#if (gt maxSingleHit 0)}}{{maxSingleHit}}{{else}}—{{/if}}</td>
+          <td class="cs-maxheal">{{#if (gt maxSingleHeal 0)}}{{maxSingleHeal}}{{else}}—{{/if}}</td>
+          <td class="cs-downed">{{timesDowned}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+      <tfoot><tr class="cs-totals-row">
+        <td><strong>{{localize "COMBATSTATS.Table.Total"}}</strong></td>
+        <td><strong>{{fightTotal.damageDealt}}</strong></td>
+        <td><strong>{{fightTotal.damageTaken}}</strong></td>
+        <td><strong>{{fightTotal.healingDone}}</strong></td>
+        <td><strong>{{fightTotal.kills}}</strong></td>
+        <td class="cs-maxhit">—</td>
+        <td class="cs-maxheal">—</td>
+        <td class="cs-downed"><strong>{{fightTotal.timesDowned}}</strong></td>
+      </tr></tfoot>
+    </table>
+
+    {{#if (gt fightDefeated.length 0)}}
+    <div class="cs-defeated-list">
+      <div class="cs-defeated-header">
+        <i class="fa-solid fa-skull"></i> {{localize "COMBATSTATS.Fight.Defeated"}} ({{fightDefeated.length}})
+      </div>
+      <div class="cs-defeated-names">
+        {{#each fightDefeated}}
+        <span class="cs-defeated-tag">
+          {{#if killerName}}
+            <span class="cs-killer">{{killerName}}</span>
+            <i class="fa-solid fa-skull cs-kill-icon"></i>
+          {{/if}}
+          <span class="cs-victim">{{name}}</span>
+        </span>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{else}}
+    <p class="cs-no-data">{{localize "COMBATSTATS.Fight.NoData"}}</p>
+    {{/if}}
+  </div>
+  {{/if}}
+  {{/if}}
+
+</div>
