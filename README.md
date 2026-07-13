@@ -79,7 +79,7 @@ Bar and doughnut colors follow each player's Foundry user color automatically.
 1. Open Foundry VTT -> **Add-on Modules** -> **Install Module**
 2. Paste the manifest URL:
    ```
-   https://github.com/Smantella/combat-stats-pf2e/releases/latest/download/combat-stats-pf2e.zip
+   https://github.com/Smantella/combat-stats-pf2e/releases/latest/download/module.json
    ```
 3. Click **Install**, then enable the module in your world
 
