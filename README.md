@@ -102,17 +102,6 @@ Bar and doughnut colors follow each player's Foundry user color automatically.
 
 ---
 
-## ⚙️ Configuration
-
-### Tracker mode
-
-| Mode | When to use |
-|------|-------------|
-| **D&D 5e Standard** | Default dnd5e damage flow, no MidiQOL |
-| **MidiQOL** | MidiQOL is active: damage is registered on Apply, not on roll |
-
-> Changing tracker mode requires a Foundry reload (F5).
-
 ### Tracked Statistics
 
 **Settings -> Tracked Statistics** has two independent sections:
